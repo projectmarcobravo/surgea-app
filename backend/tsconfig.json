@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "outDir": "build",
+    "declaration": true,
+    "strict": true,
+    "lib": ["es2021", "dom"],
+    "esModuleInterop": true,
+    "typeRoots": ["./src/@types", "./node_modules/@types"],
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
+  }
+}
