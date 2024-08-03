@@ -1,18 +1,22 @@
 import cors from "cors";
-import express, { Application, json, raw, urlencoded } from "express";
+import { Application, json, raw, urlencoded } from "express";
 import * as http from "http";
 import { Container } from "inversify";
-import { InversifyExpressServer, next } from "inversify-express-utils";
+import { InversifyExpressServer } from "inversify-express-utils";
 import { ENV } from "./env";
-import { DependencyConfigurator } from "./DependencyConfigurator";
+
+import "../src/api/user/infraestructure/UserController";
+import { DatabaseConnector } from "./DatabaseConnector";
 
 export class Server {
   public app: Application = null!;
   public httpServer?: http.Server;
   private dependencyContainer: Container;
+  private databaseConnector: DatabaseConnector;
 
   constructor() {
     this.dependencyContainer = new Container();
+    this.databaseConnector = new DatabaseConnector();
     console.log("🚀 SERVER CREATED 🚀");
     this.create();
   }
@@ -36,7 +40,7 @@ export class Server {
         console.log("❌ Server closed");
         this.httpServer.close((error) => {
           if (error) {
-            // return reject(error);
+            return reject(error);
           }
           return resolve("");
         });
@@ -49,6 +53,7 @@ export class Server {
     const server = new InversifyExpressServer(this.dependencyContainer);
     this.configServerLibraries(server);
     this.app = server.build();
+    this.databaseConnector.connect();
   }
 
   private configServerLibraries(server: InversifyExpressServer) {
@@ -60,10 +65,10 @@ export class Server {
     });
   }
 
-  //   private loadServerDependencies() {
-  //     const dependencyConfigurator = new DependencyConfigurator(
-  //       this.dependencyContainer
-  //     );
-  //     dependencyConfigurator.applyDepen
-  //   }
+  // private loadServerDependencies() {
+  //   const dependencyConfigurator = new DependencyConfigurator(
+  //     this.dependencyContainer
+  //   );
+  //   dependencyConfigurator.applyDependencies();
+  // }
 }
